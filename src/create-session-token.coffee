@@ -16,10 +16,10 @@ class CreateSessionToken
     callback null, response
 
   do: (request, callback) =>
-    {uuid, messageType, options} = request.metadata
+    {toUuid, messageType, options} = request.metadata
     data = JSON.parse request.rawData
 
-    @tokenManager.generateAndStoreToken {uuid, data}, (error, token) =>
+    @tokenManager.generateAndStoreToken {uuid: toUuid, data}, (error, token) =>
       return callback error if error?
       data.token = token
       return @_doCallback request, 201, data, callback
