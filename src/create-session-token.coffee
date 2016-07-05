@@ -17,12 +17,14 @@ class CreateSessionToken
 
   do: (request, callback) =>
     {toUuid, messageType, options} = request.metadata
-    data = JSON.parse request.rawData
+    metadata = JSON.parse request.rawData
 
-    @tokenManager.generateAndStoreToken {uuid: toUuid, data}, (error, token) =>
+    @tokenManager.generateAndStoreToken {uuid: toUuid, metadata}, (error, token) =>
       return callback error if error?
-      data.token = token
-      data.uuid = toUuid
-      return @_doCallback request, 201, data, callback
+      response = metadata
+      response ?= {}
+      response.uuid = toUuid
+      response.token = token
+      @_doCallback request, 201, metadata, callback
 
 module.exports = CreateSessionToken
