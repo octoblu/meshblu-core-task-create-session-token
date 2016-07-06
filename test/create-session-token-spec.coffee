@@ -1,6 +1,5 @@
 _                  = require 'lodash'
 mongojs            = require 'mongojs'
-redis              = require 'fakeredis'
 Datastore          = require 'meshblu-core-datastore'
 TokenManager       = require 'meshblu-core-manager-token'
 CreateSessionToken = require '../'
