@@ -1,17 +1,12 @@
 _                  = require 'lodash'
 mongojs            = require 'mongojs'
 redis              = require 'fakeredis'
-Cache              = require 'meshblu-core-cache'
 Datastore          = require 'meshblu-core-datastore'
 TokenManager       = require 'meshblu-core-manager-token'
-redis              = require 'fakeredis'
 CreateSessionToken = require '../'
-uuid               = require 'uuid'
 
 describe 'CreateSessionToken', ->
   beforeEach (done) ->
-    @redisKey = uuid.v1()
-    @cache = new Cache client: redis.createClient @redisKey
     @uuidAliasResolver = resolve: (uuid, callback) => callback(null, uuid)
     database = mongojs 'meshblu-core-task-update-device', ['tokens']
     @datastore = new Datastore {
@@ -23,8 +18,8 @@ describe 'CreateSessionToken', ->
 
   beforeEach ->
     pepper = 'im-a-pepper'
-    @tokenManager = new TokenManager { @datastore, @uuidAliasResolver, pepper, @cache}
-    @sut = new CreateSessionToken {@datastore, @uuidAliasResolver, pepper, @cache}
+    @tokenManager = new TokenManager { @datastore, @uuidAliasResolver, pepper }
+    @sut = new CreateSessionToken { @datastore, @uuidAliasResolver, pepper }
 
   describe '->do', ->
     beforeEach (done) ->
@@ -49,7 +44,6 @@ describe 'CreateSessionToken', ->
         return done error if error?
         expect(record.uuid).to.equal 'thank-you-for-considering'
         expect(record.hashedToken).to.exist
-        expect(record.hashedRootToken).to.not.exist
         expect(record.metadata.tag).to.equal 'foo'
         expect(record.metadata.createdAt).to.exist
         done()

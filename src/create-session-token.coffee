@@ -1,10 +1,10 @@
-_    = require 'lodash'
-http = require 'http'
+_            = require 'lodash'
+http         = require 'http'
 TokenManager = require 'meshblu-core-manager-token'
 
 class CreateSessionToken
-  constructor: ({@uuidAliasResolver,@cache,@datastore,@pepper}) ->
-    @tokenManager = new TokenManager {@datastore,@cache,@pepper,@uuidAliasResolver}
+  constructor: ({uuidAliasResolver, datastore, pepper}) ->
+    @tokenManager = new TokenManager {uuidAliasResolver, datastore, pepper}
 
   _doCallback: (request, code, data, callback) =>
     response =
