@@ -1,4 +1,3 @@
-_            = require 'lodash'
 http         = require 'http'
 TokenManager = require 'meshblu-core-manager-token'
 
@@ -16,7 +15,7 @@ class CreateSessionToken
     callback null, response
 
   do: (request, callback) =>
-    {toUuid, messageType, options} = request.metadata
+    {toUuid} = request.metadata
     metadata = JSON.parse request.rawData
 
     @tokenManager.generateAndStoreToken {uuid: toUuid, metadata}, (error, token) =>

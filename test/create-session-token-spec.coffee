@@ -1,4 +1,4 @@
-_                  = require 'lodash'
+{describe,beforeEach,it,expect} = global
 mongojs            = require 'mongojs'
 Datastore          = require 'meshblu-core-datastore'
 TokenManager       = require 'meshblu-core-manager-token'
@@ -7,13 +7,13 @@ CreateSessionToken = require '../'
 describe 'CreateSessionToken', ->
   beforeEach (done) ->
     @uuidAliasResolver = resolve: (uuid, callback) => callback(null, uuid)
-    database = mongojs 'meshblu-core-task-update-device', ['tokens']
+    @database = mongojs 'meshblu-core-task-update-device', ['tokens']
     @datastore = new Datastore {
-      database,
+      @database,
       collection: 'tokens'
     }
 
-    database.tokens.remove done
+    @database.tokens.remove done
 
   beforeEach ->
     pepper = 'im-a-pepper'
@@ -38,17 +38,18 @@ describe 'CreateSessionToken', ->
       expect(@response.data.token).to.exist
       expect(@response.data.tag).to.equal 'foo'
 
-    it 'should create a session token', ->
-      @datastore.findOne { uuid: 'thank-you-for-considering' }, (error, record) =>
+    it 'should create a session token', (done) ->
+      @database.tokens.findOne { uuid: '2-you-you-eye-dee' }, (error, record) =>
         return done error if error?
-        expect(record.uuid).to.equal 'thank-you-for-considering'
+        expect(record).to.exist
+        expect(record.uuid).to.equal '2-you-you-eye-dee'
         expect(record.hashedToken).to.exist
         expect(record.metadata.tag).to.equal 'foo'
         expect(record.metadata.createdAt).to.exist
         done()
 
-    it 'should be a valid session token', ->
-      @tokenManager.verifyToken {uuid: 'thank-you-for-considering', token: @response.data.token}, (error, valid) =>
+    it 'should be a valid session token', (done) ->
+      @tokenManager.verifyToken {uuid: '2-you-you-eye-dee', token: @response.data.token}, (error, valid) =>
         return done error if error?
         expect(valid).to.be.true
         done()
