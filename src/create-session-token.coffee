@@ -25,6 +25,6 @@ class CreateSessionToken
       response ?= {}
       response.uuid = toUuid
       response.token = token
-      @_doCallback request, 201, metadata, callback
+      @_doCallback request, 201, response, callback
 
 module.exports = CreateSessionToken
